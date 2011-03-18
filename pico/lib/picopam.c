@@ -621,8 +621,8 @@ static pico_status_t pam_initialize(register picodata_ProcessingUnit this, picoo
         { 1, 1, 1, 1, 1 } /*DEFAULT*/
         };
         for (i = 0; i < PICOPAM_PWIDX_SIZE; i++) {
-            for (j = 0; j < PICOPAM_PWIDX_SIZE; j++) {
-                pam->sil_weights[j][j] = tmp_weights[i][j];
+            for (j = 0; j < PICOPAM_MAX_STATES_PER_PHONE; j++) {
+                pam->sil_weights[i][j] = tmp_weights[i][j];
             }
         }
     }
