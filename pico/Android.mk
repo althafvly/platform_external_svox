@@ -9,6 +9,8 @@ include $(CLEAR_VARS)
 
 LOCAL_PACKAGE_NAME := PicoTts
 
+LOCAL_PRIVILEGED_MODULE := true
+
 LOCAL_SRC_FILES := \
     $(call all-java-files-under, src) \
     $(call all-java-files-under, compat)
