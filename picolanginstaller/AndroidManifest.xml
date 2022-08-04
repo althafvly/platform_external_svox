@@ -3,7 +3,7 @@
       package="com.svox.langpack.installer"
       android:versionCode="7"
       android:versionName="1.0">
-    <uses-sdk android:minSdkVersion="4" />
+    <uses-sdk android:minSdkVersion="4" android:targetSdkVersion="23"/>
     <uses-permission android:name="android.permission.WRITE_EXTERNAL_STORAGE" />
     <application android:icon="@drawable/icon" android:label="@string/app_name">
         <activity android:name=".InstallerActivity"
