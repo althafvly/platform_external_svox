@@ -754,7 +754,7 @@ static picoos_uint8 acphAccGetNrsLeft(register picodata_ProcessingUnit this,
         i--;
     }
 
-    if ((acph->headx[i].boundstrength != PICODATA_ITEMINFO1_BOUND_PHR0) &&
+    if (i > 0 && (acph->headx[i].boundstrength != PICODATA_ITEMINFO1_BOUND_PHR0) &&
         (acph->headx[i].head.type == PICODATA_ITEM_WORDPHON)) {
         (*nrwordspre)++;
         *nrsyllspre += acphGetNrSylls(this, acph, i);

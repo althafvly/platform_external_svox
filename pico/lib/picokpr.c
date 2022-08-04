@@ -378,7 +378,7 @@ extern picokpr_StrArrOffset picokpr_getOutItemStrOfs(picokpr_Preproc preproc, pi
     return             p[KPR_OUTITEM_STROFS_OFS+0] +
                    256*p[KPR_OUTITEM_STROFS_OFS+1] +
                256*256*p[KPR_OUTITEM_STROFS_OFS+2] +
-           256*256*256*p[KPR_OUTITEM_STROFS_OFS+3];
+           256U*256U*256U*p[KPR_OUTITEM_STROFS_OFS+3];
 }
 
 
@@ -388,7 +388,7 @@ extern picokpr_VarStrPtr picokpr_getOutItemStr(picokpr_Preproc preproc, picokpr_
     picoos_uint32 c =  p[KPR_OUTITEM_STROFS_OFS+0] +
                    256*p[KPR_OUTITEM_STROFS_OFS+1] +
                256*256*p[KPR_OUTITEM_STROFS_OFS+2] +
-           256*256*256*p[KPR_OUTITEM_STROFS_OFS+3];
+           256U*256U*256U*p[KPR_OUTITEM_STROFS_OFS+3];
 
     return (picoos_uint8 *)&(((kpr_SubObj)preproc)->rStrArr[c]);
 }
@@ -413,7 +413,7 @@ extern picokpr_OutItemArrOffset picokpr_getOutItemArgOfs(picokpr_Preproc preproc
     return             p[KPR_OUTITEM_ARGOFS_OFS+0] +
                    256*p[KPR_OUTITEM_ARGOFS_OFS+1] +
                256*256*p[KPR_OUTITEM_ARGOFS_OFS+2] +
-           256*256*256*p[KPR_OUTITEM_ARGOFS_OFS+3];
+           256U*256U*256U*p[KPR_OUTITEM_ARGOFS_OFS+3];
 }
 
 
@@ -441,7 +441,7 @@ extern picokpr_TokSetNP picokpr_getTokSetNP(picokpr_Preproc preproc, picokpr_Tok
     c =                p[KPR_TOK_SETNP_OFS+0] +
                    256*p[KPR_TOK_SETNP_OFS+1] +
                256*256*p[KPR_TOK_SETNP_OFS+2] +
-           256*256*256*p[KPR_TOK_SETNP_OFS+3];
+           256U*256U*256U*p[KPR_TOK_SETNP_OFS+3];
 
     b = 0;
     i = 0;
@@ -477,7 +477,7 @@ extern picokpr_TokSetWP picokpr_getTokSetWP(picokpr_Preproc preproc, picokpr_Tok
     c =                p[KPR_TOK_SETWP_OFS+0] +
                    256*p[KPR_TOK_SETWP_OFS+1] +
                256*256*p[KPR_TOK_SETWP_OFS+2] +
-           256*256*256*p[KPR_TOK_SETWP_OFS+3];
+           256U*256U*256U*p[KPR_TOK_SETWP_OFS+3];
 
     b = 0;
     i = 0;
@@ -563,7 +563,7 @@ extern picokpr_StrArrOffset picokpr_getProdNameOfs(picokpr_Preproc preproc, pico
     return             p[KPR_PROD_PRODNAMEOFS_OFS+0] +
                    256*p[KPR_PROD_PRODNAMEOFS_OFS+1] +
                256*256*p[KPR_PROD_PRODNAMEOFS_OFS+2] +
-           256*256*256*p[KPR_PROD_PRODNAMEOFS_OFS+3];
+           256U*256U*256U*p[KPR_PROD_PRODNAMEOFS_OFS+3];
 
 }
 
@@ -599,7 +599,7 @@ extern picokpr_StrArrOffset picokpr_getCtxCtxNameOfs(picokpr_Preproc preproc, pi
     return             p[KPR_CTX_CTXNAMEOFS_OFS+0] +
                    256*p[KPR_CTX_CTXNAMEOFS_OFS+1] +
                256*256*p[KPR_CTX_CTXNAMEOFS_OFS+2] +
-           256*256*256*p[KPR_CTX_CTXNAMEOFS_OFS+3];
+           256U*256U*256U*p[KPR_CTX_CTXNAMEOFS_OFS+3];
 }
 
 
@@ -610,7 +610,7 @@ extern picokpr_StrArrOffset picokpr_getCtxNetNameOfs(picokpr_Preproc preproc, pi
     return             p[KPR_CTX_NETNAMEOFS_OFS+0] +
                    256*p[KPR_CTX_NETNAMEOFS_OFS+1] +
                256*256*p[KPR_CTX_NETNAMEOFS_OFS+2] +
-           256*256*256*p[KPR_CTX_NETNAMEOFS_OFS+3];
+           256U*256U*256U*p[KPR_CTX_NETNAMEOFS_OFS+3];
 }
 
 
@@ -621,7 +621,7 @@ extern picokpr_StrArrOffset picokpr_getCtxProdNameOfs(picokpr_Preproc preproc, p
     return             p[KPR_CTX_PRODNAMEOFS_OFS+0] +
                    256*p[KPR_CTX_PRODNAMEOFS_OFS+1] +
                256*256*p[KPR_CTX_PRODNAMEOFS_OFS+2] +
-           256*256*256*p[KPR_CTX_PRODNAMEOFS_OFS+3];
+           256U*256U*256U*p[KPR_CTX_PRODNAMEOFS_OFS+3];
 }
 
 /* *****************************************************************************/

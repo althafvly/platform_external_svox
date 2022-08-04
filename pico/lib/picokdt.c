@@ -1849,7 +1849,7 @@ picoos_uint8 picokdt_dtPosPconstructInVec(const picokdt_DtPosP this,
                        dtposp->invec[3], dtposp->invec[4], dtposp->invec[5],
                        dtposp->invec[6], dtposp->invec[7], dtposp->invec[8],
                        dtposp->invec[9], dtposp->invec[10],
-                       dtposp->invec[11], dtposp->invec[12]));
+                       dtposp->invec[11]));
         dtposp->inveclen = PICOKDT_NRINPMT_POSP;
         return TRUE;
     }

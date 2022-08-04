@@ -550,7 +550,10 @@ void mel_2_lin_lookup(sig_innerobj_t *sig_inObj, picoos_uint32 scmeanMGC)
     K1 = (picoos_single) PICODSP_START_FLOAT_NORM * K2;
     XXr[0] = (picoos_int32) ((picoos_single) c1[0] * K1);
     for (nI = 1; nI < m1; nI++) {
-        XXr[nI] = c1[nI] << shift;
+        if (c1[nI] >= 0)
+          XXr[nI] = c1[nI] << shift;
+        else
+          XXr[nI] = -(-c1[nI] << shift);
     }
     i = sizeof(picoos_int32) * (PICODSP_FFTSIZE - m1);
     picoos_mem_set(XXr + m1, 0, i);
@@ -571,7 +574,7 @@ void mel_2_lin_lookup(sig_innerobj_t *sig_inObj, picoos_uint32 scmeanMGC)
         term2 = XXr[k];
         term1 = XXr[k + 1];
         delta = term1 - term2;
-        XXr[nI] = term2 + ((D[nI] * delta) >> 5); /* ok because nI<=A[nI] <=B[nI] */
+        XXr[nI] = term2 + (((picoos_single)D[nI] * (picoos_single)delta) / 32); /* ok because nI<=A[nI] <=B[nI] */
     }
 }/*mel_2_lin_lookup*/
 
@@ -637,7 +640,7 @@ void phase_spec2(sig_innerobj_t *sig_inObj)
         }
 
         /* handle rest of components - at least one side does not exist */
-        for (i=k; i<n_comp; i++) {
+        for (i=k; i<n_comp + 1; i++) {
             ang[i] = -(phs[i]<<6); /* - simple copy without smoothing */
         }
 
@@ -986,7 +989,12 @@ void overlap_add(sig_innerobj_t *sig_inObj)
     w = sig_inObj->WavBuff_p;
     v = sig_inObj->sig_vec1;
 
-    FAST_DEVICE(PICODSP_FFTSIZE, *(w++)+=*(v++)<<PICODSP_SHIFT_FACT6;);
+    FAST_DEVICE(PICODSP_FFTSIZE, 
+        if (*v >= 0)
+          *(w++)+=*(v++)<<PICODSP_SHIFT_FACT6;
+        else
+          *(w++)+=-(-*(v++)<<PICODSP_SHIFT_FACT6);
+        );
 
 }/*overlap_add*/
 

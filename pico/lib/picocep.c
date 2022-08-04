@@ -487,10 +487,13 @@ static picoos_int32 picocep_fixptmultpow(picoos_int32 a, picoos_uint8 pow)
     picoos_int32 zzz;
 
     if (picocep_highestBitS(a,zzz) + pow < 32) {
+      if (a >= 0)
         b = a << pow;
+      else 
+        b = -(-a << pow);
     } else {
         /* clip to maximum positive or negative value */
-        b = 1 << 31; /* maximum negative value */
+        b = 1U << 31; /* maximum negative value */
         if (a > 0) {
             b -= 1; /* maximum positive value */
         }PICODBG_WARN(("picocep_fixptmultpow warning: overflow in fixed point multiplication %i*1<<%i.  Clipping to %i\n", a, pow, b));
@@ -544,27 +547,44 @@ static picoos_int32 picocep_fixptmultdouble(picoos_int32 x, picoos_int32 y,
     /* a = floor(x/big); */
     if (x >= 0) {
         a = x >> bigpow;
-        b = x - (a << bigpow);
+        if (a >= 0)
+          b = x - (a << bigpow);
+        else
+          b = x + (-a << bigpow);
     } else {
         a = -1 * ((x * -1) >> bigpow); /* most significant 2 bytes of x */
-        b = x - (a << bigpow);
+        if (a >= 0)
+          b = x - (a << bigpow);
+        else
+          b = x + (-a << bigpow);
     }
 
     /* least significant 2 bytes of x i.e. x modulo big */
     /* c = floor(y/big); */
     if (y >= 0) {
         c = y >> bigpow;
-        d = y - (c << bigpow);
+        if (c >= 0)
+          d = y - (c << bigpow);
+        else
+          d = y + (-c << bigpow);
     } else {
         c = -1 * ((y * -1) >> bigpow);
-        d = y - (c << bigpow);
+        if (c >= 0)
+          d = y - (c << bigpow);
+        else
+          d = y + (-c << bigpow);
     }
 
     if (invDoubleDec == 1) {
         e = a * d + b * c + picocep_fixptdivpow(b * d, bigpow);
         z = a * c + picocep_fixptdivpow(e, bigpow);
     } else {
-        z = ((a * c) << bigpow) + (a * d + b * c) + picocep_fixptdivpow(b * d,
+        picoos_int32 f = a * c;
+        if (f >= 0)
+          f <<= bigpow;
+        else
+          f = -(-f << bigpow);
+        z = f + (a * d + b * c) + picocep_fixptdivpow(b * d,
                 bigpow); /* 4 mult and 3 add instead of 1 mult. */
     }
 
@@ -722,7 +742,7 @@ static picoos_int32 picocep_fixptInvDiagEle(picoos_uint32 d,
     } else {
         *rowscpow = 0;
     }
-    r = 1 << invpow;
+    r = 1U << invpow;
     b = d << (*rowscpow);
 
     /* first */
@@ -874,11 +894,22 @@ static void invMatrix(cep_subobj_t * cep, picoos_uint16 N,
     prevrowscpow = 0;
     cep->invdiag0[0] = picocep_fixptInvDiagEle(cep->diag0[0], &rowscpow,
             bigpow, invpow); /* inverse has fixed point basis 1<<invpow */
-    cep->diag1[0] = picocep_fixptinv((cep->diag1[0]) << rowscpow,
+    if (cep->diag1[0] >= 0)
+      cep->diag1[0] <<= rowscpow;
+    else
+      cep->diag1[0] = -(-cep->diag1[0] << rowscpow);
+    cep->diag1[0] = picocep_fixptinv(cep->diag1[0],
             cep->invdiag0[0], bigpow, invpow, invDoubleDec); /* perform division via inverse */
-    cep->diag2[0] = picocep_fixptinv((cep->diag2[0]) << rowscpow,
+    if (cep->diag2[0] >= 0)
+      cep->diag2[0] <<= rowscpow;
+    else
+      cep->diag2[0] = -(-cep->diag2[0] << rowscpow);
+    cep->diag2[0] = picocep_fixptinv(cep->diag2[0],
             cep->invdiag0[0], bigpow, invpow, invDoubleDec);
-    cep->WUm[0] = (cep->WUm[0]) << rowscpow; /* if diag0 too low, multiply LHS and RHS of row in matrix equation by 1<<rowscpow */
+    if (cep->WUm[0] >= 0)
+      cep->WUm[0] = (cep->WUm[0]) << rowscpow; /* if diag0 too low, multiply LHS and RHS of row in matrix equation by 1<<rowscpow */
+    else
+      cep->WUm[0] = -(-cep->WUm[0] << rowscpow); /* if diag0 too low, multiply LHS and RHS of row in matrix equation by 1<<rowscpow */
     for (j = 1; j < N; j++) {
         /* do forward substitution */
         cep->WUm[j] = cep->WUm[j] - picocep_fixptmult(cep->diag1[j - 1],
@@ -902,15 +933,26 @@ static void invMatrix(cep_subobj_t * cep, picoos_uint16 N,
         prevrowscpow = rowscpow;
         cep->invdiag0[j] = picocep_fixptInvDiagEle(cep->diag0[j], &rowscpow,
                 bigpow, invpow); /* inverse has fixed point basis 1<<invpow */
-        cep->WUm[j] = (cep->WUm[j]) << rowscpow;
+        if (cep->WUm[j] >= 0)
+          cep->WUm[j] = (cep->WUm[j]) << rowscpow;
+        else
+          cep->WUm[j] = -(-cep->WUm[j] << rowscpow);
         if (j < N - 1) {
             h = picocep_fixptmult(cep->diag2[j - 1], v1, bigpow, invDoubleDec);
-            cep->diag1[j] = picocep_fixptinv((cep->diag1[j] - h) << rowscpow,
-                    cep->invdiag0[j], bigpow, invpow, invDoubleDec); /* eliminate column j below pivot */
+            if (cep->diag1[j] - h >= 0)
+              cep->diag1[j] = picocep_fixptinv((cep->diag1[j] - h) << rowscpow,
+                      cep->invdiag0[j], bigpow, invpow, invDoubleDec); /* eliminate column j below pivot */
+            else
+              cep->diag1[j] = picocep_fixptinv(-(-(cep->diag1[j] - h) << rowscpow),
+                      cep->invdiag0[j], bigpow, invpow, invDoubleDec); /* eliminate column j below pivot */
         }
         if (j < N - 2) {
-            cep->diag2[j] = picocep_fixptinv((cep->diag2[j]) << rowscpow,
-                    cep->invdiag0[j], bigpow, invpow, invDoubleDec); /* eliminate column j below pivot */
+            if (cep->diag2[j] >= 0)
+              cep->diag2[j] = picocep_fixptinv((cep->diag2[j]) << rowscpow,
+                      cep->invdiag0[j], bigpow, invpow, invDoubleDec); /* eliminate column j below pivot */
+            else
+              cep->diag2[j] = picocep_fixptinv(-(-cep->diag2[j] << rowscpow),
+                      cep->invdiag0[j], bigpow, invpow, invDoubleDec); /* eliminate column j below pivot */
         }
     }
 
@@ -1017,7 +1059,10 @@ static picoos_uint8 makeWUWandWUm(cep_subobj_t * cep, picokpdf_PdfMUL pdf,
             prev_diag0 = cep->diag0[i] = ivar << 2; /* multiply ivar by 4 (4 used to be first entry of xsq) */
             mean = getFromPdf(pdf, vecstart, cepnum, PICOCEP_WANTMEAN,
                     PICOCEP_WANTSTATIC);
-            prev_WUm = cep->WUm[i] = mean << 1; /* multiply mean by 2 (2 used to be first entry of x) */
+            if (mean >= 0)
+              prev_WUm = cep->WUm[i] = mean << 1; /* multiply mean by 2 (2 used to be first entry of x) */
+            else
+              prev_WUm = cep->WUm[i] = -(-mean << 1); /* multiply mean by 2 (2 used to be first entry of x) */
         }
 
         /* process delta means and delta inverse variances */
@@ -1152,13 +1197,21 @@ static picoos_int32 getFromPdf(picokpdf_PdfMUL pdf, picoos_uint32 vecstart,
                 cc = pdf->ceporder + cepnum;
                 p = pdf->content + (vecstart + pdf->numvuv + cc * 2); /* cepnum'th delta mean */
                         mean = ((picoos_int32) ((picoos_int16) (*(p + 1) << 8))
-                                | *p) << (pdf->meanpowUm[cc]);
+                                | *p);
+                        if (mean >= 0)
+                          mean <<= (pdf->meanpowUm[cc]);
+                        else
+                          mean = -(-mean << pdf->meanpowUm[cc]);
                         break;
                     case PICOCEP_WANTDELTA2:
                 cc = pdf->ceporder * 2 + cepnum;
                 p = pdf->content + (vecstart + pdf->numvuv + cc * 2); /* cepnum'th delta delta mean */
                         mean = ((picoos_int32) ((picoos_int16) (*(p + 1) << 8))
-                                | *p) << (pdf->meanpowUm[cc]);
+                                | *p);
+                        if (mean >= 0)
+                          mean <<= (pdf->meanpowUm[cc]);
+                        else
+                          mean = -(-mean << pdf->meanpowUm[cc]);
                         break;
                     default:
                         /* should never come here */
@@ -1204,7 +1257,11 @@ static picoos_int32 getFromPdf(picokpdf_PdfMUL pdf, picoos_uint32 vecstart,
                         p = pdf->content
                                 + (vecstart + pdf->numvuv + cepnum * 2); /* cepnum'th static mean */
                         mean = ((picoos_int32) ((picoos_int16) (*(p + 1) << 8))
-                                | *p) << (pdf->meanpowUm[cepnum]);
+                                | *p);
+                        if (mean >= 0)
+                          mean <<= (pdf->meanpowUm[cepnum]);
+                        else
+                          mean = -(-mean << (pdf->meanpowUm[cepnum]));
                 return mean;
                         break;
                     case PICOCEP_WANTDELTA:
@@ -1220,9 +1277,11 @@ static picoos_int32 getFromPdf(picokpdf_PdfMUL pdf, picoos_uint32 vecstart,
                                 + pdf->numdeltas + s * 2; /* s'th sparse delta mean, corresponds to cepnum'th delta mean */
                                 mean
                                         = ((picoos_int32) ((picoos_int16) ((pdf->content[k
-                                + 1]) << 8)) | pdf->content[k])
-                                                << (pdf->meanpowUm[ceporder
-                                                        + cepnum]);
+                                + 1]) << 8)) | pdf->content[k]);
+                                if (mean >= 0)
+                                  mean <<= (pdf->meanpowUm[ceporder + cepnum]);
+                                else
+                                  mean = -(-mean << (pdf->meanpowUm[ceporder + cepnum]));
                         return mean;
                     }
                     s++;
@@ -1242,9 +1301,11 @@ static picoos_int32 getFromPdf(picokpdf_PdfMUL pdf, picoos_uint32 vecstart,
                                         + pdf->numdeltas + s * 2; /* s'th sparse delta mean, corresponds to cepnum'th delta delta mean */
                                 mean
                                         = ((picoos_int32) ((picoos_int16) ((pdf->content[k
-                                + 1]) << 8)) | pdf->content[k])
-                                                << (pdf->meanpowUm[ceporder2
-                                                        + cepnum]);
+                                + 1]) << 8)) | pdf->content[k]);
+                                if (mean >= 0)
+                                  mean <<= (pdf->meanpowUm[ceporder2 + cepnum]);
+                                else
+                                  mean = -(-mean << (pdf->meanpowUm[ceporder2 + cepnum]));
                         return mean;
                     }
                 }

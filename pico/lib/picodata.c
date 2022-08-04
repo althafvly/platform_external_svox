@@ -754,7 +754,10 @@ static void transDurWeighted(
         if (out < 0) {
             out = 0;
         }
-        rest -= ((out-inout[i]) << PICODATA_PRECISION);
+        if (out-inout[i] >= 0)
+          rest -= ((out-inout[i]) << PICODATA_PRECISION);
+        else
+          rest += ((inout[i]-out) << PICODATA_PRECISION);
         inout[i] = out;
     }
    (*restdur) = rest >> (PICODATA_PRECISION - frame_duration_exp);
