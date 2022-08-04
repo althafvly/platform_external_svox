@@ -22,9 +22,10 @@ LOCAL_SRC_FILES := \
 
 LOCAL_C_INCLUDES += \
 	external/svox/pico/lib \
-	external/svox/pico/compat/include
+	external/svox/pico/compat/include \
+	external/svox/pico/legacyfix/include
 
-LOCAL_STATIC_LIBRARIES := libsvoxpico
+LOCAL_STATIC_LIBRARIES := libsvoxpico libcutils_legacyfix
 
 LOCAL_SHARED_LIBRARIES := \
 	libcutils \
@@ -53,9 +54,10 @@ LOCAL_CFLAGS := $(svox_tts_warn_flags)
 
 LOCAL_C_INCLUDES += \
 	external/svox/pico/lib \
-	external/svox/pico/compat/include
+	external/svox/pico/compat/include \
+	external/svox/pico/legacyfix/include
 
-LOCAL_STATIC_LIBRARIES := libsvoxpico
+LOCAL_STATIC_LIBRARIES := libsvoxpico libcutils_legacyfix
 LOCAL_SHARED_LIBRARIES := libcutils libexpat libutils liblog
 
 include $(BUILD_SHARED_LIBRARY)

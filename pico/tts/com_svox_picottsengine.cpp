@@ -41,7 +41,6 @@
 #include <utils/String16.h>                     /* for strlen16 */
 #include <TtsEngine.h>
 
-#include <cutils/jstring.h>
 #include <picoapi.h>
 #include <picodefs.h>
 
