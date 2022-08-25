@@ -1,0 +1,5 @@
+<permissions>
+    <privapp-permissions package="com.svox.pico">
+        <permission name="android.permission.DELETE_PACKAGES"/>
+    </privapp-permissions>
+</permissions>
