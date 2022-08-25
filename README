@@ -1,0 +1,5 @@
+PicoTTS port for Android 12.1
+
+Just
+$(call inherit-product, external/svox/svox_tts.mk)
+and call it a day :)
