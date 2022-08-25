@@ -13,7 +13,7 @@ LOCAL_SRC_FILES := \
     $(call all-java-files-under, src) \
     $(call all-java-files-under, compat)
 
-LOCAL_JNI_SHARED_LIBRARIES := libttscompat libttspico
+LOCAL_JNI_SHARED_LIBRARIES := libjni_ttscompat libjni_ttspico
 LOCAL_PROGUARD_FLAG_FILES := proguard.flags
 
 LOCAL_PRIVATE_PLATFORM_APIS := true

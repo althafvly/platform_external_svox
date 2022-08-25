@@ -29,7 +29,7 @@ import android.util.Log;
 public class SynthProxy {
 
     static {
-        System.loadLibrary("ttscompat");
+        System.loadLibrary("jni_ttscompat");
     }
 
     private final static String TAG = "SynthProxy";

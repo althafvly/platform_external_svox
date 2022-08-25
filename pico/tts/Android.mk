@@ -44,7 +44,7 @@ include $(BUILD_STATIC_LIBRARY)
 # above, except that it packages things a shared library.
 include $(CLEAR_VARS)
 
-LOCAL_MODULE := libttspico
+LOCAL_MODULE := libjni_ttspico
 	
 LOCAL_SRC_FILES := \
 	com_svox_picottsengine.cpp \
