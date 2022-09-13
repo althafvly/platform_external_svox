@@ -65,7 +65,7 @@ using namespace android;
 
 /* string constants */
 #define MAX_OUTBUF_SIZE     128
-const char * PICO_SYSTEM_LINGWARE_PATH      = "/system/tts/lang_pico/";
+const char * PICO_SYSTEM_LINGWARE_PATH      = "/system_ext/tts/lang_pico/";
 const char * PICO_LINGWARE_PATH             = "/sdcard/svox/";
 const char * PICO_VOICE_NAME                = "PicoVoice";
 const char * PICO_SPEED_OPEN_TAG            = "<speed level='%d'>";

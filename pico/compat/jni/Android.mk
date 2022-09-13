@@ -3,6 +3,8 @@ include $(CLEAR_VARS)
 
 LOCAL_MODULE:= libjni_ttscompat
 
+LOCAL_SYSTEM_EXT_MODULE := true
+
 LOCAL_SRC_FILES:= \
 	com_android_tts_compat_SynthProxy.cpp
 

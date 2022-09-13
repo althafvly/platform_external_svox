@@ -16,6 +16,7 @@ LOCAL_SRC_FILES := \
 LOCAL_JNI_SHARED_LIBRARIES := libjni_ttscompat libjni_ttspico
 LOCAL_PROGUARD_FLAG_FILES := proguard.flags
 
+LOCAL_SYSTEM_EXT_MODULE := true
 LOCAL_PRIVATE_PLATFORM_APIS := true
 
 include $(BUILD_PACKAGE)

@@ -45,7 +45,9 @@ include $(BUILD_STATIC_LIBRARY)
 include $(CLEAR_VARS)
 
 LOCAL_MODULE := libjni_ttspico
-	
+
+LOCAL_SYSTEM_EXT_MODULE := true
+
 LOCAL_SRC_FILES := \
 	com_svox_picottsengine.cpp \
 	svox_ssml_parser.cpp

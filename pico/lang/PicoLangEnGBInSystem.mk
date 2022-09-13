@@ -7,6 +7,6 @@
 # 
 
 PRODUCT_COPY_FILES += \
-	external/svox/pico/lang/en-GB_kh0_sg.bin:system/tts/lang_pico/en-GB_kh0_sg.bin \
-	external/svox/pico/lang/en-GB_ta.bin:system/tts/lang_pico/en-GB_ta.bin
+	external/svox/pico/lang/en-GB_kh0_sg.bin:$(TARGET_COPY_OUT_SYSTEM_EXT)/tts/lang_pico/en-GB_kh0_sg.bin \
+	external/svox/pico/lang/en-GB_ta.bin:$(TARGET_COPY_OUT_SYSTEM_EXT)/tts/lang_pico/en-GB_ta.bin
 

@@ -37,7 +37,7 @@ public class CheckVoiceData extends Activity {
     // in external/svox/pico/tts/com_svox_picottsengine.cpp
     private final static String PICO_LINGWARE_PATH =
             Environment.getExternalStorageDirectory() + "/svox/";
-    private final static String PICO_SYSTEM_LINGWARE_PATH = "/system/tts/lang_pico/";
+    private final static String PICO_SYSTEM_LINGWARE_PATH = "/system_ext/tts/lang_pico/";
 
     private final static String[] dataFiles = {
             "de-DE_gl0_sg.bin", "de-DE_ta.bin", "en-GB_kh0_sg.bin", "en-GB_ta.bin",
