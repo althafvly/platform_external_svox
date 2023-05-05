@@ -125,26 +125,11 @@ public class InstallerActivity extends Activity {
                 sIsInstalling = false;
             }
             if (sInstallationSuccess) {
-                // installation completed: signal success (extra set to SUCCESS)
-                Intent installCompleteIntent =
-                        new Intent(TextToSpeech.Engine.ACTION_TTS_DATA_INSTALLED);
-                installCompleteIntent.putExtra(TextToSpeech.Engine.EXTRA_TTS_DATA_INSTALLED,
-                        TextToSpeech.SUCCESS);
-                self.sendBroadcast(installCompleteIntent);
                 finish();
-            } else {
+            } else if (!self.isFinishing()) {
                 // installation failed
-                // signal install error if the activity is finishing (can't ask the user to retry)
-                if (self.isFinishing()) {
-                    Intent installCompleteIntent =
-                        new Intent(TextToSpeech.Engine.ACTION_TTS_DATA_INSTALLED);
-                    installCompleteIntent.putExtra(TextToSpeech.Engine.EXTRA_TTS_DATA_INSTALLED,
-                            TextToSpeech.ERROR);
-                    self.sendBroadcast(installCompleteIntent);
-                } else {
-                    // the activity is still running, ask the user to retry.
-                    runOnUiThread(new retryDisplayer());
-                }
+                // the activity is still running, ask the user to retry.
+                runOnUiThread(new retryDisplayer());
             }
         }
     }

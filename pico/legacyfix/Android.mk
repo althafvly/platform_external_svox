@@ -9,8 +9,10 @@ LOCAL_SRC_FILES := \
 	src/strdup16to8.cpp
 
 LOCAL_C_INCLUDES += \
-	external/svox/pico/legacyfix/include
+	external/svox/pico/legacyfix/include \
+	$(JNI_H_INCLUDE)
 
 LOCAL_ARM_MODE := arm
+LOCAL_SDK_VERSION := current
 
 include $(BUILD_STATIC_LIBRARY)

@@ -34,11 +34,11 @@
 #include <stdio.h>
 #include <unistd.h>
 #include <stdlib.h>
+#include <string.h>
 
 #define LOG_TAG "SVOX Pico Engine"
 
-#include <utils/Log.h>
-#include <utils/String16.h>                     /* for strlen16 */
+#include <cutils/log.h>
 #include <TtsEngine.h>
 
 #include <picoapi.h>

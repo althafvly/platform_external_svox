@@ -19,14 +19,14 @@
 
 #define LOG_TAG "SynthProxyJNI"
 
-#include <utils/Log.h>
+#include <cutils/log.h>
 #include <jni.h>
 #include <nativehelper/JNIHelp.h>
-#include <android_runtime/AndroidRuntime.h>
-#include <android_runtime/Log.h>
 #include <math.h>
 
 #include <dlfcn.h>
+
+#include <mutex>
 
 #include "tts.h"
 
@@ -129,7 +129,7 @@ static jmethodID synthesisRequest_start;
 static jmethodID synthesisRequest_audioAvailable;
 static jmethodID synthesisRequest_done;
 
-static Mutex engineMutex;
+static std::mutex engineMutex;
 
 
 
@@ -357,7 +357,7 @@ com_android_tts_compat_SynthProxy_native_setup(JNIEnv *env, jobject thiz,
 
         android_tts_engine_t *engine = (*get_TtsEngine)();
         if (engine) {
-            Mutex::Autolock l(engineMutex);
+            std::lock_guard<std::mutex> l(engineMutex);
             engine->funcs->init(engine, __ttsSynthDoneCB, engConfigString);
 
             SynthProxyJniStorage *pSynthData = new SynthProxyJniStorage();
@@ -390,7 +390,7 @@ com_android_tts_compat_SynthProxy_native_finalize(JNIEnv *env, jobject thiz, jlo
         return;
     }
 
-    Mutex::Autolock l(engineMutex);
+    std::lock_guard<std::mutex> l(engineMutex);
 
     delete pSynthData;
 }
@@ -438,7 +438,7 @@ com_android_tts_compat_SynthProxy_setLanguage(JNIEnv *env, jobject thiz, jlong j
         return ANDROID_TTS_LANG_NOT_SUPPORTED;
     }
 
-    Mutex::Autolock l(engineMutex);
+    std::lock_guard<std::mutex> l(engineMutex);
 
     android_tts_engine_t *engine = pSynthData->mEngine;
     if (!engine) {
@@ -497,7 +497,7 @@ com_android_tts_compat_SynthProxy_setProperty(JNIEnv *env, jobject thiz, jlong j
         return ANDROID_TTS_FAILURE;
     }
 
-    Mutex::Autolock l(engineMutex);
+    std::lock_guard<std::mutex> l(engineMutex);
 
     android_tts_engine_t *engine = pSynthData->mEngine;
     if (!engine) {
@@ -527,7 +527,7 @@ com_android_tts_compat_SynthProxy_speak(JNIEnv *env, jobject thiz, jlong jniData
 
     initializeFilter();
 
-    Mutex::Autolock l(engineMutex);
+    std::lock_guard<std::mutex> l(engineMutex);
 
     android_tts_engine_t *engine = pSynthData->mEngine;
     if (!engine) {

@@ -15,11 +15,11 @@
  *
 */
 
+#define LOG_TAG "ssml"
 #include "svox_ssml_parser.h"
-#include <utils/Log.h>
+#include <cutils/log.h>
 #include <cutils/jstring.h>
 #include <string.h>
-#include <utils/String16.h>
 
 #define SSML_PITCH_XLOW     "50"
 #define SSML_PITCH_LOW      "75"

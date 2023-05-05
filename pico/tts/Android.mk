@@ -25,15 +25,17 @@ LOCAL_C_INCLUDES += \
 	external/svox/pico/compat/include \
 	external/svox/pico/legacyfix/include
 
-LOCAL_STATIC_LIBRARIES := libsvoxpico libcutils_legacyfix
+LOCAL_STATIC_LIBRARIES := \
+    libsvoxpico \
+    libcutils_legacyfix \
+    libnativehelper_compat_libc++
 
 LOCAL_SHARED_LIBRARIES := \
-	libcutils \
 	libexpat \
-	libutils \
 	liblog
 
 LOCAL_ARM_MODE := arm
+LOCAL_SDK_VERSION := current
 
 include $(BUILD_STATIC_LIBRARY)
 
@@ -59,8 +61,17 @@ LOCAL_C_INCLUDES += \
 	external/svox/pico/compat/include \
 	external/svox/pico/legacyfix/include
 
-LOCAL_STATIC_LIBRARIES := libsvoxpico libcutils_legacyfix
-LOCAL_SHARED_LIBRARIES := libcutils libexpat libutils liblog
+LOCAL_STATIC_LIBRARIES := \
+    libsvoxpico \
+    libcutils_legacyfix \
+    libnativehelper_compat_libc++
+
+LOCAL_SHARED_LIBRARIES := \
+	libexpat \
+	liblog
+
+LOCAL_ARM_MODE := arm
+LOCAL_SDK_VERSION := current
 
 include $(BUILD_SHARED_LIBRARY)
 
