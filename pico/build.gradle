@@ -1,0 +1,62 @@
+repositories {
+    google()
+    mavenCentral()
+}
+
+buildscript {
+    repositories {
+        google()
+        mavenCentral()
+    }
+
+    dependencies {
+        classpath 'com.android.tools.build:gradle:8.13.0'
+    }
+}
+
+apply plugin: 'com.android.application'
+
+android {
+    namespace = "com.svox.pico"
+    compileSdk 36
+
+    defaultConfig {
+        minSdk 23
+        targetSdk 36
+
+        versionCode = 1
+        versionName = "1.0"
+    }
+
+    sourceSets {
+        main {
+            res.srcDirs = ['res']
+            java.srcDirs = ['src', 'compat/src']
+            manifest.srcFile 'AndroidManifest.xml'
+        }
+    }
+
+    signingConfigs {
+        debugConfig {
+            storeFile file("$rootDir/testkey.jks")
+            storePassword 'testkey'
+            keyAlias 'testkey'
+            keyPassword 'testkey'
+        }
+    }
+
+    buildTypes {
+        debug {
+            minifyEnabled false
+            signingConfig signingConfigs.debugConfig
+        }
+    }
+
+    compileOptions {
+        sourceCompatibility JavaVersion.VERSION_21
+        targetCompatibility JavaVersion.VERSION_21
+    }
+}
+
+dependencies {
+}
