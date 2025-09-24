@@ -1,6 +1,7 @@
 LOCAL_PATH := $(call my-dir)
 
 svox_tts_warn_flags := \
+    -fno-sized-deallocation \
     -Wall -Werror \
     -Wno-sign-compare \
     -Wno-unused-const-variable \
