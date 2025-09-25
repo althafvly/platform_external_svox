@@ -1,0 +1,24 @@
+cc_library_shared {
+    name: "libjni_ttscompat",
+    srcs: [
+        "com_android_tts_compat_SynthProxy.cpp"
+    ],
+    shared_libs: [
+        "liblog",
+    ],
+    static_libs: [
+        "libnativehelper_compat_libc++",
+        "libcutils_legacyfix",
+    ],
+    local_include_dirs: [
+        ".",
+    ],
+    cppflags: [
+        "-Wall",
+        "-Werror",
+        "-Wno-unused-parameter",
+    ],
+    sdk_version: "current",
+    compile_multilib: "both",
+    system_ext_specific: true,
+}

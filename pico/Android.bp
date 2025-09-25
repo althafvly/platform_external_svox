@@ -1,0 +1,21 @@
+android_app {
+    name: "PicoTts",
+    srcs: [
+        "src/**/*.java",
+        "compat/**/*.java",
+    ],
+    jni_libs: [
+        "libjni_ttscompat",
+        "libjni_ttspico",
+    ],
+    optimize: {
+        proguard_flags_files: ["proguard.flags"],
+    },
+    static_libs: [
+        "androidx.appcompat_appcompat",
+        "androidx.preference_preference",
+    ],
+    sdk_version: "current",
+    compile_multilib: "both",
+    system_ext_specific: true,
+}

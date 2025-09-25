@@ -1,0 +1,4 @@
+android_app {
+    name: "PicoLangInstallerSpaEsp",
+    sdk_version: "current",
+}
