@@ -17,11 +17,9 @@
 package com.svox.pico;
 
 import android.content.Intent;
-import android.net.Uri;
 import android.os.Bundle;
 import android.preference.Preference;
 import android.preference.PreferenceActivity;
-import android.preference.Preference.OnPreferenceClickListener;
 import android.speech.tts.TextToSpeech;
 import android.util.Log;
 
@@ -33,7 +31,6 @@ import java.util.Locale;
  * sd card.
  */
 public class EngineSettings extends PreferenceActivity {
-    private final static String MARKET_URI_START = "market://search?q=pname:com.svox.pico.voice.";
     private static final int VOICE_DATA_CHECK_CODE = 42;
 
     @Override
@@ -63,7 +60,7 @@ public class EngineSettings extends PreferenceActivity {
                 pref.setEnabled(false);
             }
 
-            
+
             for (int i = 0; i < unavailable.size(); i++){
                 final String unavailableLang = unavailable.get(i);
                 String[] languageCountry = unavailableLang.split("-");
@@ -71,15 +68,7 @@ public class EngineSettings extends PreferenceActivity {
                 Preference pref = findPreference(unavailableLang);
                 pref.setTitle(loc.getDisplayLanguage() + " (" + loc.getDisplayCountry() + ")");
                 pref.setSummary(R.string.not_installed);
-                pref.setEnabled(true);
-                pref.setOnPreferenceClickListener(new OnPreferenceClickListener(){
-                    public boolean onPreferenceClick(Preference preference) {
-                        Uri marketUri = Uri.parse(MARKET_URI_START + unavailableLang.toLowerCase().replace("-", "."));
-                        Intent marketIntent = new Intent(Intent.ACTION_VIEW, marketUri);
-                        startActivity(marketIntent);
-                        return false;
-                    }
-                });
+                pref.setEnabled(false);
             }
         }
     }
