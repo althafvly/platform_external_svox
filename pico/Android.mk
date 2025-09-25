@@ -19,6 +19,8 @@ LOCAL_PROGUARD_FLAG_FILES := proguard.flags
 LOCAL_SYSTEM_EXT_MODULE := true
 LOCAL_SDK_VERSION := current
 
+LOCAL_MULTILIB := both
+
 include $(BUILD_PACKAGE)
 
 include $(LOCAL_PATH)/compat/jni/Android.mk \

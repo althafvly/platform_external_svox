@@ -35,7 +35,7 @@ LOCAL_SHARED_LIBRARIES := \
 	libexpat \
 	liblog
 
-LOCAL_ARM_MODE := arm
+LOCAL_MULTILIB := both
 LOCAL_SDK_VERSION := current
 
 include $(BUILD_STATIC_LIBRARY)
@@ -71,7 +71,7 @@ LOCAL_SHARED_LIBRARIES := \
 	libexpat \
 	liblog
 
-LOCAL_ARM_MODE := arm
+LOCAL_MULTILIB := both
 LOCAL_SDK_VERSION := current
 
 include $(BUILD_SHARED_LIBRARY)

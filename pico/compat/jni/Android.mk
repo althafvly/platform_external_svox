@@ -5,6 +5,7 @@ LOCAL_MODULE := libjni_ttscompat
 
 LOCAL_SDK_VERSION := current
 LOCAL_SYSTEM_EXT_MODULE := true
+LOCAL_MULTILIB := both
 
 LOCAL_SRC_FILES:= \
 	com_android_tts_compat_SynthProxy.cpp
