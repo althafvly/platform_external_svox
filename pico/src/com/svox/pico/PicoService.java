@@ -18,12 +18,8 @@ package com.svox.pico;
 import com.android.tts.compat.CompatTtsService;
 
 public class PicoService extends CompatTtsService {
-
-    private static final String TAG = "PicoService";
-
     @Override
     protected String getSoFilename() {
         return "libjni_ttspico.so";
     }
-
 }

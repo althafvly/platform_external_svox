@@ -22,6 +22,8 @@ import android.database.MatrixCursor;
 import android.net.Uri;
 import android.os.Environment;
 
+import androidx.annotation.NonNull;
+
 /*
  * This content provider enables the TtsService to get a String of configuration
  * data from the plugin engine and pass it back to that engine's .so file in the
@@ -34,7 +36,7 @@ import android.os.Environment;
  */
 
 public class SettingsProvider extends ContentProvider {
-    private class SettingsCursor extends MatrixCursor {
+    private static class SettingsCursor extends MatrixCursor {
         private String settings;
 
         public SettingsCursor(String[] columnNames) {
@@ -58,17 +60,17 @@ public class SettingsProvider extends ContentProvider {
 
 
     @Override
-    public int delete(Uri uri, String selection, String[] selectionArgs) {
+    public int delete(@NonNull Uri uri, String selection, String[] selectionArgs) {
         return 0;
     }
 
     @Override
-    public String getType(Uri uri) {
+    public String getType(@NonNull Uri uri) {
         return null;
     }
 
     @Override
-    public Uri insert(Uri uri, ContentValues values) {
+    public Uri insert(@NonNull Uri uri, ContentValues values) {
         return null;
     }
 
@@ -78,8 +80,8 @@ public class SettingsProvider extends ContentProvider {
     }
 
     @Override
-    public Cursor query(Uri uri, String[] projection, String selection, String[] selectionArgs,
-            String sortOrder) {
+    public Cursor query(@NonNull Uri uri, String[] projection, String selection, String[] selectionArgs,
+                        String sortOrder) {
         String[] dummyColumns = {"", ""};
         SettingsCursor cursor = new SettingsCursor(dummyColumns);
         cursor.putSettings(Environment.getExternalStorageDirectory() + "/svox/");
@@ -87,7 +89,7 @@ public class SettingsProvider extends ContentProvider {
     }
 
     @Override
-    public int update(Uri uri, ContentValues values, String selection, String[] selectionArgs) {
+    public int update(@NonNull Uri uri, ContentValues values, String selection, String[] selectionArgs) {
         return 0;
     }
 

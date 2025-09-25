@@ -16,25 +16,25 @@
 
 package com.svox.pico;
 
-import java.io.File;
-
-import android.app.Activity;
 import android.content.Intent;
 import android.os.Bundle;
 import android.os.Environment;
 import android.speech.tts.TextToSpeech;
 
+import androidx.annotation.NonNull;
+import androidx.appcompat.app.AppCompatActivity;
+
+import java.io.File;
 import java.util.ArrayList;
 import java.util.HashMap;
 
-/*
+/**
  * Checks if the voice data for the SVOX Pico Engine is present on the
- * sd card.
+ * external storage or system directory.
  */
-public class CheckVoiceData extends Activity {
+public class CheckVoiceData extends AppCompatActivity {
 
-    // The following constants are the same path constants as the ones defined
-    // in external/svox/pico/tts/com_svox_picottsengine.cpp
+    // Deprecated, but still used for Pico legacy
     private final static String PICO_LINGWARE_PATH =
             Environment.getExternalStorageDirectory() + "/svox/";
     private final static String PICO_SYSTEM_LINGWARE_PATH = "/system_ext/tts/lang_pico/";
@@ -46,12 +46,12 @@ public class CheckVoiceData extends Activity {
     };
 
     private final static String[] dataFilesInfo = {
-        "deu-DEU", "deu-DEU", "eng-GBR", "eng-GBR", "eng-USA", "eng-USA",
-        "spa-ESP", "spa-ESP", "fra-FRA", "fra-FRA", "ita-ITA", "ita-ITA"
+            "deu-DEU", "deu-DEU", "eng-GBR", "eng-GBR", "eng-USA", "eng-USA",
+            "spa-ESP", "spa-ESP", "fra-FRA", "fra-FRA", "ita-ITA", "ita-ITA"
     };
 
     private final static String[] supportedLanguages = {
-        "deu-DEU", "eng-GBR", "eng-USA", "spa-ESP", "fra-FRA", "ita-ITA"
+            "deu-DEU", "eng-GBR", "eng-USA", "spa-ESP", "fra-FRA", "ita-ITA"
     };
 
     @Override
@@ -61,30 +61,14 @@ public class CheckVoiceData extends Activity {
         int result = TextToSpeech.Engine.CHECK_VOICE_DATA_PASS;
         boolean foundMatch = false;
 
-        ArrayList<String> available = new ArrayList<String>();
-        ArrayList<String> unavailable = new ArrayList<String>();
-
-        HashMap<String, Boolean> languageCountry = new HashMap<String, Boolean>();
-
-        Bundle bundle = getIntent().getExtras();
-        if (bundle != null){
-            ArrayList<String> langCountryVars = bundle.getStringArrayList(
-                    TextToSpeech.Engine.EXTRA_CHECK_VOICE_DATA_FOR);
-            if (langCountryVars != null){
-                for (int i = 0; i < langCountryVars.size(); i++){
-                    if (langCountryVars.get(i).length() > 0){
-                        languageCountry.put(langCountryVars.get(i), true);
-                    }
-                }
-            }
-        }
+        ArrayList<String> available = new ArrayList<>();
+        ArrayList<String> unavailable = new ArrayList<>();
+        HashMap<String, Boolean> languageCountry = getStringBooleanHashMap();
 
         // Check for files
-        for (int i = 0; i < supportedLanguages.length; i++){
-            if ((languageCountry.size() < 1) ||
-                (languageCountry.containsKey(supportedLanguages[i]))){
-                if (!fileExists(dataFiles[2 * i]) ||
-                    !fileExists(dataFiles[(2 * i) + 1])){
+        for (int i = 0; i < supportedLanguages.length; i++) {
+            if ((languageCountry.isEmpty()) || languageCountry.containsKey(supportedLanguages[i])) {
+                if (fileNotExists(dataFiles[2 * i]) || fileNotExists(dataFiles[(2 * i) + 1])) {
                     result = TextToSpeech.Engine.CHECK_VOICE_DATA_MISSING_DATA;
                     unavailable.add(supportedLanguages[i]);
                 } else {
@@ -94,29 +78,43 @@ public class CheckVoiceData extends Activity {
             }
         }
 
-        if ((languageCountry.size() > 0) && !foundMatch){
+        if (!languageCountry.isEmpty() && !foundMatch) {
             result = TextToSpeech.Engine.CHECK_VOICE_DATA_FAIL;
         }
 
-        // Put the root directory for the sd card data + the data filenames
+        // Return data
         Intent returnData = new Intent();
         returnData.putExtra(TextToSpeech.Engine.EXTRA_VOICE_DATA_ROOT_DIRECTORY, PICO_LINGWARE_PATH);
         returnData.putExtra(TextToSpeech.Engine.EXTRA_VOICE_DATA_FILES, dataFiles);
         returnData.putExtra(TextToSpeech.Engine.EXTRA_VOICE_DATA_FILES_INFO, dataFilesInfo);
-
         returnData.putStringArrayListExtra(TextToSpeech.Engine.EXTRA_AVAILABLE_VOICES, available);
         returnData.putStringArrayListExtra(TextToSpeech.Engine.EXTRA_UNAVAILABLE_VOICES, unavailable);
         setResult(result, returnData);
         finish();
     }
 
-    private boolean fileExists(String filename){
-        File tempFile = new File(PICO_LINGWARE_PATH + filename);
-        File tempFileSys = new File(PICO_SYSTEM_LINGWARE_PATH + filename);
-        if ((!tempFile.exists()) && (!tempFileSys.exists())) {
-            return false;
+    @NonNull
+    private HashMap<String, Boolean> getStringBooleanHashMap() {
+        HashMap<String, Boolean> languageCountry = new HashMap<>();
+
+        Bundle bundle = getIntent().getExtras();
+        if (bundle != null) {
+            ArrayList<String> langCountryVars = bundle.getStringArrayList(
+                    TextToSpeech.Engine.EXTRA_CHECK_VOICE_DATA_FOR);
+            if (langCountryVars != null) {
+                for (String s : langCountryVars) {
+                    if (!s.isEmpty()) {
+                        languageCountry.put(s, true);
+                    }
+                }
+            }
         }
-        return true;
+        return languageCountry;
     }
 
+    private boolean fileNotExists(String filename) {
+        File tempFile = new File(PICO_LINGWARE_PATH + filename);
+        File tempFileSys = new File(PICO_SYSTEM_LINGWARE_PATH + filename);
+        return !tempFile.exists() && !tempFileSys.exists();
+    }
 }

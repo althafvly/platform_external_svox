@@ -16,62 +16,101 @@
 
 package com.svox.pico;
 
+import android.annotation.SuppressLint;
 import android.content.Intent;
 import android.os.Bundle;
-import android.preference.Preference;
-import android.preference.PreferenceActivity;
-import android.speech.tts.TextToSpeech;
-import android.util.Log;
+
+import androidx.annotation.NonNull;
+import androidx.annotation.Nullable;
+import androidx.appcompat.app.AppCompatActivity;
+import androidx.preference.Preference;
+import androidx.preference.PreferenceFragmentCompat;
 
 import java.util.ArrayList;
 import java.util.Locale;
 
-/*
- * Checks if the voice data for the SVOX Pico Engine is present on the
- * sd card.
- */
-public class EngineSettings extends PreferenceActivity {
+import android.speech.tts.TextToSpeech;
+import android.util.Log;
+import android.view.View;
+
+public class EngineSettings extends AppCompatActivity {
     private static final int VOICE_DATA_CHECK_CODE = 42;
 
     @Override
-    protected void onCreate(Bundle savedInstanceState) {
+    protected void onCreate(@Nullable Bundle savedInstanceState) {
         super.onCreate(savedInstanceState);
-        
-        Intent i = new Intent();
-        i.setClass(this, CheckVoiceData.class);
+
+        // Load the fragment
+        getSupportFragmentManager()
+                .beginTransaction()
+                .replace(android.R.id.content, new EngineSettingsFragment())
+                .commit();
+
+        // Start the voice data check
+        Intent i = new Intent(this, CheckVoiceData.class);
         startActivityForResult(i, VOICE_DATA_CHECK_CODE);
     }
-    
+
     @Override
-    public void onActivityResult(int requestCode, int resultCode, Intent data){
-        if (requestCode == VOICE_DATA_CHECK_CODE){
+    protected void onActivityResult(int requestCode, int resultCode, @Nullable Intent data) {
+        super.onActivityResult(requestCode, resultCode, data);
+
+        if (requestCode == VOICE_DATA_CHECK_CODE && data != null) {
             ArrayList<String> available = data.getStringArrayListExtra(TextToSpeech.Engine.EXTRA_AVAILABLE_VOICES);
             ArrayList<String> unavailable = data.getStringArrayListExtra(TextToSpeech.Engine.EXTRA_UNAVAILABLE_VOICES);
 
-            addPreferencesFromResource(R.xml.voices_list);
-            
-            for (int i = 0; i < available.size(); i++){
-                Log.e("debug", available.get(i));
-                String[] languageCountry = available.get(i).split("-");
-                Locale loc = new Locale(languageCountry[0], languageCountry[1]);
-                Preference pref = findPreference(available.get(i));
-                pref.setTitle(loc.getDisplayLanguage() + " (" + loc.getDisplayCountry() + ")");
-                pref.setSummary(R.string.installed);
-                pref.setEnabled(false);
-            }
+            EngineSettingsFragment fragment = (EngineSettingsFragment)
+                    getSupportFragmentManager().findFragmentById(android.R.id.content);
 
-
-            for (int i = 0; i < unavailable.size(); i++){
-                final String unavailableLang = unavailable.get(i);
-                String[] languageCountry = unavailableLang.split("-");
-                Locale loc = new Locale(languageCountry[0], languageCountry[1]);
-                Preference pref = findPreference(unavailableLang);
-                pref.setTitle(loc.getDisplayLanguage() + " (" + loc.getDisplayCountry() + ")");
-                pref.setSummary(R.string.not_installed);
-                pref.setEnabled(false);
+            if (fragment != null) {
+                fragment.updateVoiceList(available, R.string.installed);
+                fragment.updateVoiceList(unavailable, R.string.not_installed);
             }
         }
     }
-    
 
+    public static class EngineSettingsFragment extends PreferenceFragmentCompat {
+
+        @Override
+        public void onCreatePreferences(Bundle savedInstanceState, String rootKey) {
+            setPreferencesFromResource(R.xml.voices_list, rootKey);
+        }
+
+        @Override
+        public void onViewCreated(@NonNull View view, @Nullable Bundle savedInstanceState) {
+            super.onViewCreated(view, savedInstanceState);
+
+            int statusBarHeight = 0;
+            int resourceId = getResources().getIdentifier("status_bar_height", "dimen", "android");
+            if (resourceId > 0) {
+                statusBarHeight = getResources().getDimensionPixelSize(resourceId);
+            }
+
+            if (getListView() != null) {
+                getListView().setPadding(
+                        getListView().getPaddingLeft(),
+                        statusBarHeight + 16,
+                        getListView().getPaddingRight(),
+                        getListView().getPaddingBottom()
+                );
+            }
+        }
+
+        private void updateVoiceList(ArrayList<String> voices, int summaryRes) {
+            if (voices == null) return;
+
+            for (String voice : voices) {
+                Log.e("debug", voice);
+                String[] parts = voice.split("-");
+                Locale loc = new Locale(parts[0], parts[1]);
+                Preference pref = findPreference(voice);
+                if (pref != null) {
+                    pref.setTitle(loc.getDisplayLanguage() + " (" + loc.getDisplayCountry() + ")");
+                    pref.setSummary(summaryRes);
+                    pref.setIconSpaceReserved(false);
+                    pref.setEnabled(false);
+                }
+            }
+        }
+    }
 }

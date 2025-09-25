@@ -16,19 +16,17 @@
 
 package com.svox.pico;
 
-import java.io.File;
-
-import android.app.Activity;
 import android.content.Intent;
 import android.os.Bundle;
 import android.speech.tts.TextToSpeech;
 
-import android.util.Log;
+import androidx.appcompat.app.AppCompatActivity;
 
-/*
- * Returns the sample text string for the language requested
+/**
+ * Returns the sample text string for the requested language.
  */
-public class GetSampleText extends Activity {
+public class GetSampleText extends AppCompatActivity {
+
     @Override
     protected void onCreate(Bundle savedInstanceState) {
         super.onCreate(savedInstanceState);
@@ -37,27 +35,43 @@ public class GetSampleText extends Activity {
         Intent returnData = new Intent();
 
         Intent i = getIntent();
-        String language = i.getExtras().getString("language");
-        String country = i.getExtras().getString("country");
-        String variant = i.getExtras().getString("variant");
+        Bundle extras = i.getExtras();
+        if (extras == null) {
+            result = TextToSpeech.LANG_NOT_SUPPORTED;
+            returnData.putExtra("sampleText", "");
+            setResult(result, returnData);
+            finish();
+            return;
+        }
 
-        if (language.equals("eng")) {
-          if (country.equals("GBR")){
-            returnData.putExtra("sampleText", getString(R.string.eng_gbr_sample));
-          } else {
-            returnData.putExtra("sampleText", getString(R.string.eng_usa_sample));
-          }
-        } else if (language.equals("fra")) {
-          returnData.putExtra("sampleText", getString(R.string.fra_fra_sample));
-        } else if (language.equals("ita")) {
-          returnData.putExtra("sampleText", getString(R.string.ita_ita_sample));
-        } else if (language.equals("deu")) {
-          returnData.putExtra("sampleText", getString(R.string.deu_deu_sample));
-        } else if (language.equals("spa")) {
-          returnData.putExtra("sampleText", getString(R.string.spa_esp_sample));
-        } else {
-          result = TextToSpeech.LANG_NOT_SUPPORTED;
-          returnData.putExtra("sampleText", "");
+        String language = extras.getString("language", "");
+        String country = extras.getString("country", "");
+        // String variant = extras.getString("variant", "");
+
+        switch (language) {
+            case "eng":
+                if ("GBR".equals(country)) {
+                    returnData.putExtra("sampleText", getString(R.string.eng_gbr_sample));
+                } else {
+                    returnData.putExtra("sampleText", getString(R.string.eng_usa_sample));
+                }
+                break;
+            case "fra":
+                returnData.putExtra("sampleText", getString(R.string.fra_fra_sample));
+                break;
+            case "ita":
+                returnData.putExtra("sampleText", getString(R.string.ita_ita_sample));
+                break;
+            case "deu":
+                returnData.putExtra("sampleText", getString(R.string.deu_deu_sample));
+                break;
+            case "spa":
+                returnData.putExtra("sampleText", getString(R.string.spa_esp_sample));
+                break;
+            default:
+                result = TextToSpeech.LANG_NOT_SUPPORTED;
+                returnData.putExtra("sampleText", "");
+                break;
         }
 
         setResult(result, returnData);

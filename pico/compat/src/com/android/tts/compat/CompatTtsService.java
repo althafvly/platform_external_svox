@@ -23,8 +23,6 @@ import android.speech.tts.TextToSpeech;
 import android.speech.tts.TextToSpeechService;
 import android.util.Log;
 
-import java.io.File;
-
 public abstract class CompatTtsService extends TextToSpeechService {
 
     private static final boolean DBG = false;
@@ -148,7 +146,6 @@ public abstract class CompatTtsService extends TextToSpeechService {
         // Synthesize
         if (mNativeSynth.speak(request, callback) != TextToSpeech.SUCCESS) {
             callback.error();
-            return;
         }
     }
 

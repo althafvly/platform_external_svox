@@ -67,20 +67,17 @@ public class SynthProxy {
     /**
      * Stops and clears the AudioTrack.
      */
-    public int stop() {
-        return native_stop(mJniData);
+    public void stop() {
+        native_stop(mJniData);
     }
 
     /**
      * Synchronous stop of the synthesizer. This method returns when the synth
      * has completed the stop procedure and doesn't use any of the resources it
      * was using while synthesizing.
-     *
-     * @return {@link android.speech.tts.TextToSpeech#SUCCESS} or
-     *         {@link android.speech.tts.TextToSpeech#ERROR}
      */
-    public int stopSync() {
-        return native_stopSync(mJniData);
+    public void stopSync() {
+        native_stopSync(mJniData);
     }
 
     public int speak(SynthesisRequest request, SynthesisCallback callback) {
@@ -154,32 +151,32 @@ public class SynthProxy {
         }
     }
 
-    private native final long native_setup(String nativeSoLib, String engineConfig);
+    private native long native_setup(String nativeSoLib, String engineConfig);
 
-    private native final int native_setLowShelf(boolean applyFilter, float filterGain,
-            float attenuationInDb, float freqInHz, float slope);
+    private native int native_setLowShelf(boolean applyFilter, float filterGain,
+                                          float attenuationInDb, float freqInHz, float slope);
 
-    private native final void native_finalize(long jniData);
+    private native void native_finalize(long jniData);
 
-    private native final int native_stop(long jniData);
+    private native int native_stop(long jniData);
 
-    private native final int native_stopSync(long jniData);
+    private native int native_stopSync(long jniData);
 
-    private native final int native_speak(long jniData, String text, SynthesisCallback request);
+    private native int native_speak(long jniData, String text, SynthesisCallback request);
 
-    private native final int  native_isLanguageAvailable(long jniData, String language,
-            String country, String variant);
+    private native int  native_isLanguageAvailable(long jniData, String language,
+                                                   String country, String variant);
 
-    private native final int native_setLanguage(long jniData, String language, String country,
-            String variant);
+    private native int native_setLanguage(long jniData, String language, String country,
+                                          String variant);
 
-    private native final int native_loadLanguage(long jniData, String language, String country,
-            String variant);
+    private native int native_loadLanguage(long jniData, String language, String country,
+                                           String variant);
 
-    private native final int native_setProperty(long jniData, String name, String value);
+    private native int native_setProperty(long jniData, String name, String value);
 
-    private native final String[] native_getLanguage(long jniData);
+    private native String[] native_getLanguage(long jniData);
 
-    private native final void native_shutdown(long jniData);
+    private native void native_shutdown(long jniData);
 
 }
