@@ -34,6 +34,10 @@ public abstract class CompatTtsService extends TextToSpeechService {
 
     protected abstract String getSoFilename();
 
+    static {
+        System.loadLibrary("jni_ttspico");
+    }
+
     @Override
     public void onCreate() {
         if (DBG) Log.d(TAG, "onCreate()");

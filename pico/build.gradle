@@ -32,6 +32,7 @@ android {
         main {
             res.srcDirs = ['res']
             java.srcDirs = ['src', 'compat/src']
+            jniLibs.srcDirs = ['jniLibs']
             manifest.srcFile 'AndroidManifest.xml'
         }
     }
@@ -42,6 +43,12 @@ android {
             storePassword 'testkey'
             keyAlias 'testkey'
             keyPassword 'testkey'
+        }
+    }
+
+    packagingOptions {
+        jniLibs {
+            useLegacyPackaging true  // forces extractNativeLibs=true
         }
     }
 
