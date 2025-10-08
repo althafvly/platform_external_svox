@@ -15,6 +15,10 @@
 -->
 
 <PreferenceScreen xmlns:android="http://schemas.android.com/apk/res/android"
+    android:title="@string/app_name">
+
+    <PreferenceCategory
+        android:icon="@android:drawable/ic_menu_manage"
         android:title="@string/app_name">
 
         <Preference
@@ -35,5 +39,6 @@
         <Preference
             android:key="spa-ESP"
             android:persistent="false" />
+    </PreferenceCategory>
 
 </PreferenceScreen>

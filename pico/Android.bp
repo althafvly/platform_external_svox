@@ -1,8 +1,8 @@
 android_app {
     name: "PicoTts",
     srcs: [
-        "src/**/*.java",
-        "compat/**/*.java",
+        "src/**/*.kt",
+        "compat/**/*.kt",
     ],
     jni_libs: [
         "libjni_ttscompat",

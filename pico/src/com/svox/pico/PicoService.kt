@@ -13,13 +13,12 @@
  * License for the specific language governing permissions and limitations under
  * the License.
  */
-package com.svox.pico;
+package com.svox.pico
 
-import com.android.tts.compat.CompatTtsService;
+import com.android.tts.compat.CompatTtsService
 
-public class PicoService extends CompatTtsService {
-    @Override
-    protected String getSoFilename() {
-        return "libjni_ttspico.so";
+class PicoService : CompatTtsService() {
+    override fun getSoFilename(): String? {
+        return "libjni_ttspico.so"
     }
 }
