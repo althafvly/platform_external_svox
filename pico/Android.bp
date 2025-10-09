@@ -2,7 +2,6 @@ android_app {
     name: "PicoTts",
     srcs: [
         "src/**/*.kt",
-        "compat/**/*.kt",
     ],
     jni_libs: [
         "libjni_ttscompat",
@@ -19,3 +18,88 @@ android_app {
     compile_multilib: "both",
     system_ext_specific: true,
 }
+
+cc_defaults {
+    name: "libttspico_defaults",
+    cflags: [
+        "-fno-sized-deallocation",
+        "-Wall",
+        "-Werror",
+        "-Wno-sign-compare",
+        "-Wno-unused-const-variable",
+        "-Wno-unused-parameter",
+    ],
+    srcs: [
+        "tts/com_svox_picottsengine.cpp",
+        "tts/svox_ssml_parser.cpp",
+    ],
+    static_libs: [
+        "libsvoxpico",
+        "libnativehelper_compat_libc++",
+    ],
+    shared_libs: [
+        "libexpat",
+        "liblog",
+    ],
+    local_include_dirs: [
+        "tts/include",
+        "lib",
+    ],
+    system_ext_specific: true,
+    compile_multilib: "both",
+    sdk_version: "current",
+}
+
+cc_library_static {
+    name: "libttspico_engine",
+    defaults: ["libttspico_defaults"],
+}
+
+cc_library_shared {
+    name: "libjni_ttspico",
+    defaults: ["libttspico_defaults"],
+}
+
+cc_library_shared {
+    name: "libjni_ttscompat",
+    srcs: [
+        "tts/com_android_tts_compat_SynthProxy.cpp"
+    ],
+    shared_libs: [
+        "liblog",
+    ],
+    static_libs: [
+        "libnativehelper_compat_libc++",
+    ],
+    local_include_dirs: [
+        "tts/include",
+    ],
+    cppflags: [
+        "-Wall",
+        "-Werror",
+        "-Wno-unused-parameter",
+    ],
+    sdk_version: "current",
+    compile_multilib: "both",
+    system_ext_specific: true,
+}
+
+cc_library_static {
+    name: "libsvoxpico",
+    srcs: [
+        "lib/*.c",
+    ],
+    cflags: [
+        "-Wall",
+        "-Werror",
+        "-Wno-error=infinite-recursion",
+        "-Wno-parentheses-equality",
+        "-Wno-self-assign",
+        "-Wno-sign-compare",
+        "-Wno-unneeded-internal-declaration",
+        "-Wno-unused-parameter",
+    ],
+    compile_multilib: "both",
+    sdk_version: "current",
+}
+

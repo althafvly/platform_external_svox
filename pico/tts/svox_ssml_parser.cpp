@@ -16,7 +16,7 @@
 */
 
 #define LOG_TAG "ssml"
-#include "svox_ssml_parser.h"
+#include <svox_ssml_parser.h>
 #include <android/log.h>
 #include <string.h>
 #include <codecvt>

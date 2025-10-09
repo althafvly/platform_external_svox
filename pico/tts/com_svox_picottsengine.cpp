@@ -44,7 +44,7 @@
 #include <picoapi.h>
 #include <picodefs.h>
 
-#include "svox_ssml_parser.h"
+#include <svox_ssml_parser.h>
 
 using namespace android;
 
