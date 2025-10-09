@@ -19,7 +19,8 @@
 
 #define LOG_TAG "SynthProxyJNI"
 
-#include <cutils/log.h>
+#include <android/log.h>
+#include <assert.h>
 #include <jni.h>
 #include <nativehelper/JNIHelp.h>
 #include <math.h>
@@ -29,6 +30,28 @@
 #include <mutex>
 
 #include "tts.h"
+
+#define ALOGE(...) __android_log_print(ANDROID_LOG_ERROR, LOG_TAG, __VA_ARGS__)
+#define ALOGW(...) __android_log_print(ANDROID_LOG_WARN,  LOG_TAG, __VA_ARGS__)
+#define ALOGI(...) __android_log_print(ANDROID_LOG_INFO,  LOG_TAG, __VA_ARGS__)
+#define ALOGD(...) __android_log_print(ANDROID_LOG_DEBUG, LOG_TAG, __VA_ARGS__)
+
+#define ALOGE_IF(cond, ...) \
+    do { if (cond) ALOGE(__VA_ARGS__); } while (0)
+
+#define LOGE_EX(env, ex) \
+    do { \
+        if (env && (ex)) { \
+            jclass cls = env->GetObjectClass(ex); \
+            jmethodID mid = env->GetMethodID(cls, "toString", "()Ljava/lang/String;"); \
+            jstring s = (jstring)env->CallObjectMethod(ex, mid); \
+            const char* msg = env->GetStringUTFChars(s, nullptr); \
+            ALOGE("Java exception: %s", msg); \
+            env->ReleaseStringUTFChars(s, msg); \
+            env->DeleteLocalRef(s); \
+            env->DeleteLocalRef(cls); \
+        } \
+    } while (0)
 
 #define DEFAULT_TTS_RATE        16000
 #define DEFAULT_TTS_BUFFERSIZE  2048

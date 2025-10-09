@@ -8,7 +8,6 @@ cc_library_shared {
     ],
     static_libs: [
         "libnativehelper_compat_libc++",
-        "libcutils_legacyfix",
     ],
     local_include_dirs: [
         ".",

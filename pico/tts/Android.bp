@@ -14,7 +14,6 @@ cc_defaults {
     ],
     static_libs: [
         "libsvoxpico",
-        "libcutils_legacyfix",
         "libnativehelper_compat_libc++",
     ],
     shared_libs: [

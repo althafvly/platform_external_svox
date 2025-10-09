@@ -17,9 +17,15 @@
 
 #define LOG_TAG "ssml"
 #include "svox_ssml_parser.h"
-#include <cutils/log.h>
-#include <cutils/jstring.h>
+#include <android/log.h>
 #include <string.h>
+#include <codecvt>
+#include <locale>
+
+#define ALOGE(...) __android_log_print(ANDROID_LOG_ERROR, LOG_TAG, __VA_ARGS__)
+#define ALOGW(...) __android_log_print(ANDROID_LOG_WARN,  LOG_TAG, __VA_ARGS__)
+#define ALOGI(...) __android_log_print(ANDROID_LOG_INFO,  LOG_TAG, __VA_ARGS__)
+#define ALOGD(...) __android_log_print(ANDROID_LOG_DEBUG, LOG_TAG, __VA_ARGS__)
 
 #define SSML_PITCH_XLOW     "50"
 #define SSML_PITCH_LOW      "75"
@@ -46,6 +52,38 @@
 
 extern int cnvIpaToXsampa(const char16_t* ipaString, size_t ipaStringSize, char** outXsampaString);
 extern char * createPhonemeString( const char * xsampa, int length );
+
+// strlen8to16: returns number of char16_t needed to store UTF-8 string
+inline size_t strlen8to16(const char* utf8) {
+    if (!utf8) return 0;
+    std::wstring_convert<std::codecvt_utf8_utf16<char16_t>, char16_t> conv;
+    std::u16string u16 = conv.from_bytes(utf8);
+    return u16.size();
+}
+
+// strdup8to16: allocate a char16_t array and copy UTF-8 string into it
+inline char16_t* strdup8to16(const char* utf8, size_t* out_len = nullptr) {
+    if (!utf8) return nullptr;
+    std::wstring_convert<std::codecvt_utf8_utf16<char16_t>, char16_t> conv;
+    std::u16string u16 = conv.from_bytes(utf8);
+    if (out_len) *out_len = u16.size();
+    char16_t* buffer = new char16_t[u16.size() + 1];
+    for (size_t i = 0; i < u16.size(); i++) buffer[i] = u16[i];
+    buffer[u16.size()] = 0;
+    return buffer;
+}
+
+// strndup16to8: allocate a char array and copy UTF-16 string into UTF-8
+inline char* strndup16to8(const char16_t* utf16, size_t len) {
+    if (!utf16) return nullptr;
+    std::wstring_convert<std::codecvt_utf8_utf16<char16_t>, char16_t> conv;
+    std::u16string u16(utf16, utf16 + len);
+    std::string utf8 = conv.to_bytes(u16);
+    char* buffer = new char[utf8.size() + 1];
+    std::copy(utf8.begin(), utf8.end(), buffer);
+    buffer[utf8.size()] = 0;
+    return buffer;
+}
 
 SvoxSsmlParser::SvoxSsmlParser() : m_isInBreak(0), m_appendix(NULL), m_docLanguage(NULL)
 {
